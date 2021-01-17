@@ -33,8 +33,7 @@ public class ManagerActor extends UntypedAbstractActor {
 		matrix.put(2, new ArrayList<Integer>(Arrays.asList(4)));
 		matrix.put(3, new ArrayList<Integer>(Arrays.asList(4)));
 		matrix.put(4, new ArrayList<Integer>(Arrays.asList(5)));
-		matrix.put(5, new ArrayList<Integer>());
-		//matrix.put(5, new ArrayList<Integer>(Arrays.asList(2))); //infinite loop
+		matrix.put(5, new ArrayList<Integer>(Arrays.asList(2)));
 	}
 
 	private void sendRef(){
@@ -67,12 +66,16 @@ public class ManagerActor extends UntypedAbstractActor {
 			createMatrix();
 			sendRef();
 
-			getContext().system().scheduler().scheduleOnce(Duration.ofMillis(1000), getSelf(), "go", getContext().system().dispatcher(), ActorRef.noSender());
+			getContext().system().scheduler().scheduleOnce(Duration.ofMillis(1000), getSelf(), "go1", getContext().system().dispatcher(), ActorRef.noSender());
 		}
 		else if (message instanceof String) {
 			String data = (String)message;
-			if (data=="go"){
-				String msg = "Packet";
+			if (data=="go1"){
+				MessageIntString msg = new MessageIntString(0, "Packet");
+				listOfActorRef.get(0).tell(msg, getSelf());
+				getContext().system().scheduler().scheduleOnce(Duration.ofMillis(1000), getSelf(), "go2", getContext().system().dispatcher(), ActorRef.noSender());
+			} else if (data=="go2"){
+				MessageIntString msg = new MessageIntString(1, "OtherPacket");
 				listOfActorRef.get(0).tell(msg, getSelf());
 			}
 		}

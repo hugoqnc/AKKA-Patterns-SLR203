@@ -49,7 +49,7 @@
                     <arguments>
                         <argument>-classpath</argument>
                         <classpath />
-                        <argument>demo.UncontrolledFlooding</argument>
+                        <argument>demo.ControlledFlooding</argument>
                     </arguments>
                 </configuration>
             </plugin>

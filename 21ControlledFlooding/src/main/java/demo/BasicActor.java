@@ -14,6 +14,7 @@ public class BasicActor extends UntypedAbstractActor{
 	private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
 	// Actor reference
 	ArrayList<ActorRef> knownRefList;
+	private int currentSequenceNumber = -1;
 
 	public BasicActor() {}
 
@@ -42,12 +43,19 @@ public class BasicActor extends UntypedAbstractActor{
 			log.info("["+getSelf().path().name()+"] received message with the list of Ref '" + names + "' from ["+ getSender().path().name() +"]");
 
 		}
-		else if(message instanceof String){
-			log.info("["+getSelf().path().name()+"] received message '"+((String)message) +"' from ["+ getSender().path().name() +"]");
+		else if(message instanceof MessageIntString){
+			int sequenceNumber = ((MessageIntString)message).sequenceNumber;
 
-			for(ActorRef receiver : knownRefList){
-				receiver.tell(message, getSelf());
+			if (sequenceNumber!=currentSequenceNumber){
+				currentSequenceNumber = sequenceNumber;
+				log.info("["+getSelf().path().name()+"] RECEIVED&SENT message #"+((MessageIntString)message).sequenceNumber+" '"+((MessageIntString)message).data +"' from ["+ getSender().path().name() +"]");
+				for(ActorRef receiver : knownRefList){
+					receiver.tell(message, getSelf());
+				}
+			} else {
+				log.info("["+getSelf().path().name()+"] DROPPED message #"+((MessageIntString)message).sequenceNumber+" '"+((MessageIntString)message).data +"' from ["+ getSender().path().name() +"]");
 			}
+			
 		}
 	}
 

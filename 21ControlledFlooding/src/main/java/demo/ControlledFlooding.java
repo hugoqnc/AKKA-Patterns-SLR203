@@ -10,7 +10,7 @@ import akka.actor.ActorSystem;
  * @description Create an actor and passing his reference to
  *				another actor by message.
  */
-public class UncontrolledFlooding {
+public class ControlledFlooding {
 
 	public static void main(String[] args) {
 		// Instantiate an actor system
